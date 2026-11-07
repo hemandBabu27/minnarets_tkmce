@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minnarets TKMCE - Campus Intelligence & Academic Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Source Sans 3', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Source Sans 3 Font & FontAwesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: 200%;
+            animation: marquee 28s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        .badge-pill {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            background-color: #dbeafe;
+            color: #1d4ed8;
+            margin-bottom: 12px;
+        }
+        .badge-pill-white {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+        .map-pin {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .map-pin:hover {
+            transform: scale(1.25) translateY(-4px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-700 text-slate-800 bg-slate-50">
+
+    <!-- Sticky Header & Announcement Marquee -->
+    <div class="sticky top-0 z-50">
+        <!-- Live Ticker Marquee Bar -->
+        <div class="bg-slate-950 text-white text-xs font-medium py-2 overflow-hidden border-b border-slate-800 shadow-inner">
+            <div class="animate-marquee whitespace-nowrap flex items-center">
+                <div class="flex items-center gap-8 shrink-0 px-4 tracking-wide">
+                    <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <strong class="font-bold text-blue-300">TKMCE Hub:</strong> Karicode, Kollam • Semester End & KTU Notes Directory Updated</span>
+                    <span class="text-slate-600">•</span>
+                    <span class="inline-flex items-center gap-2">🚀 <strong class="font-bold text-blue-300">SIH 2026:</strong> Team Registrations Active & Matchmaker Online</span>
+                    <span class="text-slate-600">•</span>
+                    <span class="inline-flex items-center gap-2">📅 <strong class="font-bold text-blue-300">Venues:</strong> APJ Hall & Central Auditorium Date Slot Requests Open</span>
+                    <span class="text-slate-600">•</span>
+                </div>
+                <div class="flex items-center gap-8 shrink-0 px-4 tracking-wide">
+                    <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <strong class="font-bold text-blue-300">TKMCE Hub:</strong> Karicode, Kollam • Semester End & KTU Notes Directory Updated</span>
+                    <span class="text-slate-600">•</span>
+                    <span class="inline-flex items-center gap-2">🚀 <strong class="font-bold text-blue-300">SIH 2026:</strong> Team Registrations Active & Matchmaker Online</span>
+                    <span class="text-slate-600">•</span>
+                    <span class="inline-flex items-center gap-2">📅 <strong class="font-bold text-blue-300">Venues:</strong> APJ Hall & Central Auditorium Date Slot Requests Open</span>
+                    <span class="text-slate-600">•</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation Header -->
+        <header class="glass-header border-b border-slate-200/90 shadow-2xs">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <!-- Brand Logo & Title -->
+                <button onclick="showDashboard()" class="flex items-center gap-3 text-left focus:outline-none">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-extrabold text-lg shadow-sm shadow-blue-200">
+                        M
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-black text-lg sm:text-xl text-slate-900 tracking-tight leading-none">MINNARETS <span class="text-blue-600 font-bold text-base">TKMCE</span></span>
+                        <span class="text-[9px] text-slate-500 uppercase tracking-widest font-extrabold mt-0.5">Karicode Campus Intelligence</span>
+                    </div>
+                </button>
+
+                <!-- Nav Links -->
+                <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-bold text-slate-600">
+                    <button onclick="showDashboard()" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/60 transition-colors">Home Dashboard</button>
+                    <button onclick="openPageView('page-academic')" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/60 transition-colors">Academic Workspace</button>
+                    <button onclick="openPageView('page-map')" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/60 transition-colors">Campus Map</button>
+                    <button onclick="openPageView('page-teamup')" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/60 transition-colors">Team Finder</button>
+                    <button onclick="openPageView('page-venue')" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/60 transition-colors">Book Dates</button>
+                    <button onclick="openPageView('page-clubs')" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/60 transition-colors">Clubs</button>
+                </nav>
+
+                <!-- Action Button -->
+                <div class="flex items-center gap-3">
+                    <button onclick="openModal('teamup-modal')" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors shadow-sm shadow-blue-200">
+                        <i class="fa-solid fa-plus text-xs"></i> Post Need
+                    </button>
+                    <!-- Mobile Nav Toggle -->
+                    <button onclick="toggleMobileNav()" class="lg:hidden p-2 text-slate-600 hover:text-slate-900">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Dropdown Nav -->
+            <div id="mobile-nav" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-1">
+                <button onclick="showDashboard(); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Home Dashboard</button>
+                <button onclick="openPageView('page-academic'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Academic Workspace</button>
+                <button onclick="openPageView('page-map'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Campus Map</button>
+                <button onclick="openPageView('page-teamup'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Team Finder</button>
+                <button onclick="openPageView('page-venue'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-md text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Venue Date Booking</button>
+            </div>
+        </header>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow">
+        
+        <!-- ================= MAIN DASHBOARD VIEW ================= -->
+        <div id="main-dashboard-view">
+            <!-- Hero Banner -->
+            <section class="py-10 sm:py-14 bg-gradient-to-b from-white via-blue-50/20 to-slate-50 border-b border-slate-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Minnarets TKMCE Central Hub • Karicode
+                    </span>
+                    <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                        TKMCE Campus <span class="text-blue-600 underline decoration-blue-300 underline-offset-4">Intelligence Platform</span>
+                    </h1>
+                    <p class="mt-3 text-sm sm:text-base text-slate-600 font-normal max-w-2xl mx-auto leading-relaxed">
+                        Access KTU study notes, book campus venue dates, discover student clubs, pair up for hackathons, and locate neighbourhood services instantly.
+                    </p>
+
+                    <!-- Universal Search Input Bar -->
+                    <div class="mt-7 max-w-xl mx-auto relative">
+                        <div class="relative flex items-center">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400"></i>
+                            <input type="text" id="hero-search" onkeyup="handleGlobalSearch()" placeholder="Search KTU notes, venues, clubs, scholarships, or hostels..." 
+                                class="w-full pl-11 pr-4 py-3 bg-white rounded-xl border border-slate-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm font-semibold text-slate-800 placeholder-slate-400">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EXACT GRID MODULE CARDS -->
+            <section class="py-12 bg-slate-50 border-b border-slate-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                        <!-- Card 1: ACADEMIC WORKSPACE -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="notes academic study syllabus ktu">
+                            <div>
+                                <span class="badge-pill">NOTES</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">ACADEMIC WORKSPACE</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Browse notes, study materials, PYQs, and syllabus copies to support your learning.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-academic')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: STAY ON SCHEDULE -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="calendar timeline academic schedule exam deadlines">
+                            <div>
+                                <span class="badge-pill">CALENDAR</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">STAY ON SCHEDULE</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Access a comprehensive timeline of KTU exam dates, internal schedules, and assignment deadlines.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-schedule')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: WHAT'S HAPPENING -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="events college tech symposium cultural fest workshops">
+                            <div>
+                                <span class="badge-pill">EVENTS</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">WHAT'S HAPPENING</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Discover upcoming college tech symposiums, workshops, sports leagues, and cultural fests instantly.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-events')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: THERE'S A CLUB FOR THAT -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="community club societies ieee sae foss iedc robotics">
+                            <div>
+                                <span class="badge-pill">COMMUNITY</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">THERE'S A CLUB FOR THAT</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Explore campus clubs and technical societies (IEEE, SAE, FOSS Cell, IEDC), learn what they do, and join them.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-clubs')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 5: SENIOR CIRCLE -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="mentorship seniors directory guidance advice gate placement study abroad">
+                            <div>
+                                <span class="badge-pill">MENTORSHIP</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">SENIOR CIRCLE</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Access a directory of senior student mentors for GATE prep, software placement advice, and research guidance.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-seniors')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 6: FUNDING FINDER -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="scholarship funding grants eligibility e-grantz mcm alumni">
+                            <div>
+                                <span class="badge-pill">SCHOLARSHIP</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">FUNDING FINDER</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Browse state, central, and alumni scholarships along with eligibility criteria, deadlines, and application guides.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-funding')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 7: WOMEN SAFETY -->
+                        <div class="card-item bg-white border-2 border-blue-600 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="safety women harassment complaints internal committee helpline">
+                            <div>
+                                <span class="badge-pill">SAFETY</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">WOMEN SAFETY & HELPLINES</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Secure encrypted portal to report safety concerns, anti-ragging issues, or harassment to college authorities.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-safety')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 8: ROOMS AND RATIONS -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="accommodation hostel mess menu food dining rooms pg rentals karicode">
+                            <div>
+                                <span class="badge-pill">ACCOMMODATION</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">ROOMS AND RATIONS</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Explore central hostel mess weekly food menus, rate dining quality, and view verified PGs and rooms around Karicode.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-hostel')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 9: NEIGHBOURHOOD CHEAT SHEET -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="explore neighbourhood cheat sheet amenities atm clinic tea xerox bus transit karicode">
+                            <div>
+                                <span class="badge-pill">EXPLORE</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">NEIGHBOURHOOD CHEAT SHEET</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Local guide to Karicode xerox print shops, tea stalls, ATMs, late-night pharmacies, bus routes, and auto stands.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-cheatsheet')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Additional Feature Cards -->
+                        <!-- Card 10: INTERACTIVE CAMPUS MAP -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="map layout campus blueprint navigation pins buildings admin apj library">
+                            <div>
+                                <span class="badge-pill">MAP</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">CAMPUS BLUEPRINT MAP</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Interactive 2D blueprint map of TKMCE blocks, APJ auditorium, department labs, and central canteen.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-map')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 11: HACKATHON TEAM MATCHMAKER -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="hackathon team up teammates project competition sih coding developer">
+                            <div>
+                                <span class="badge-pill">MATCHMAKER</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">HACKATHON TEAM FINDER</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Find teammates by skills (AI/ML, Embedded, Web, Flutter) or publish team vacancies for national hackathons.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-teamup')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card 12: VENUE DATE RESERVATIONS -->
+                        <div class="card-item bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-all group relative overflow-hidden" data-category="venue booking reservation date slot apj auditorium hall schedule">
+                            <div>
+                                <span class="badge-pill">RESERVATIONS</span>
+                                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-2">VENUE DATE BOOKING</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-normal">Check availability schedules for APJ Hall & Central Auditorium, and submit event date slot requests.</p>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button onclick="openPageView('page-venue')" class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:bg-blue-700 transition-colors shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom 2 Full-Featured Vibrant Blue Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                        <!-- Blue Card 1: GOT QUESTIONS? -->
+                        <div class="card-item bg-blue-600 rounded-2xl p-6 sm:p-8 text-white flex flex-col justify-between relative overflow-hidden shadow-md group" data-category="inquiry ask questions launchpad support help search faq">
+                            <div class="relative z-10">
+                                <span class="badge-pill-white">INQUIRY</span>
+                                <div class="my-4 flex justify-center py-2">
+                                    <div class="w-16 h-16 bg-blue-500/80 rounded-2xl flex items-center justify-center border border-blue-400 shadow-inner">
+                                        <i class="fa-solid fa-circle-question text-4xl text-white"></i>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-black uppercase tracking-tight mb-1">GOT QUESTIONS?</h3>
+                                <p class="text-xs text-blue-100 font-normal">Ask Launchpad anything about campus procedures, exams, or administrative desks.</p>
+                            </div>
+                            <div class="mt-6 flex justify-end relative z-10">
+                                <button onclick="openPageView('page-ask')" class="w-9 h-9 rounded-full bg-white text-blue-600 flex items-center justify-center group-hover:bg-blue-50 transition-colors shadow-sm font-bold">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Blue Card 2: RAISE ISSUE -->
+                        <div class="card-item bg-blue-600 rounded-2xl p-6 sm:p-8 text-white flex flex-col justify-between relative overflow-hidden shadow-md group" data-category="student welfare raise issue report hostel problems infrastructure portal bug grievance ktu">
+                            <div class="relative z-10">
+                                <span class="badge-pill-white">STUDENT WELFARE</span>
+                                <div class="my-4 flex justify-center py-2">
+                                    <div class="w-16 h-16 bg-blue-500/80 rounded-2xl flex items-center justify-center border border-blue-400 shadow-inner">
+                                        <i class="fa-solid fa-bullhorn text-4xl text-white"></i>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-black uppercase tracking-tight mb-1">RAISE ISSUE</h3>
+                                <p class="text-xs text-blue-100 font-normal">Report campus or hostel grievances directly to ICU and college welfare committee.</p>
+                            </div>
+                            <div class="mt-6 flex justify-end relative z-10">
+                                <button onclick="openPageView('page-issue')" class="w-9 h-9 rounded-full bg-white text-blue-600 flex items-center justify-center group-hover:bg-blue-50 transition-colors shadow-sm font-bold">
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+
+        <!-- ================= FULL PAGE VIEWS CONTAINER ================= -->
+        <div id="page-views-container" class="hidden">
+            
+            <!-- Standard Top Breadcrumb Header for All Views -->
+            <div class="bg-white border-b border-slate-200 py-4 shadow-2xs">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                    <button onclick="showDashboard()" class="inline-flex items-center gap-2 text-xs font-extrabold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors border border-blue-200">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard Grid
+                    </button>
+                    <span id="page-title-breadcrumb" class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Module View
+                    </span>
+                </div>
+            </div>
+
+            <!-- Page 1: Academic Workspace -->
+            <div id="page-academic" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+                            <div>
+                                <span class="badge-pill">ACADEMIC REPOSITORY</span>
+                                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">KTU Course Notes, PYQs & Syllabus</h2>
+                                <p class="text-xs sm:text-sm text-slate-500 mt-1">Select semester and department to download course modules and previous question papers.</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="openModal('upload-note-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg shadow-sm">
+                                    <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Upload Notes
+                                </button>
+                                <select id="page-dept-select" onchange="filterPageNotes()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="all">All Departments</option>
+                                    <option value="CSE">Computer Science (CSE)</option>
+                                    <option value="ECE">Electronics (ECE)</option>
+                                    <option value="EEE">Electrical (EEE)</option>
+                                    <option value="ME">Mechanical (ME)</option>
+                                    <option value="CE">Civil Engineering (CE)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Semester Selector Pills -->
+                        <div class="flex items-center gap-2 overflow-x-auto py-4 custom-scrollbar">
+                            <button onclick="selectPageSem('S1')" class="page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-blue-600 text-white shadow-2xs">S1 & S2</button>
+                            <button onclick="selectPageSem('S3')" class="page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200">Semester 3</button>
+                            <button onclick="selectPageSem('S4')" class="page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200">Semester 4</button>
+                            <button onclick="selectPageSem('S5')" class="page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200">Semester 5</button>
+                            <button onclick="selectPageSem('S6')" class="page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200">Semester 6</button>
+                            <button onclick="selectPageSem('S7')" class="page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200">Semester 7</button>
+                            <button onclick="selectPageSem('S8')" class="page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200">Semester 8</button>
+                        </div>
+
+                        <!-- Notes List Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6" id="page-notes-grid">
+                            <div class="page-note-card bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between" data-dept="CSE" data-sem="S6">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-3">
+                                        <span class="px-2.5 py-1 bg-blue-100 text-blue-700 font-bold text-xs rounded-md">CSE • S6</span>
+                                        <span class="text-xs text-slate-500"><i class="fa-regular fa-file-pdf text-red-500 mr-1"></i> Module 1-5 PDF</span>
+                                    </div>
+                                    <h3 class="font-bold text-slate-900 text-base mb-1">Compiler Design (CST 302)</h3>
+                                    <p class="text-xs text-slate-600 line-clamp-2 mb-4">Lexical analysis, YACC, syntax directed translation & code optimization.</p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-xs">
+                                    <span class="text-slate-500 font-medium">KTU 2019 Scheme</span>
+                                    <button onclick="downloadNote('Compiler Design')" class="font-bold text-blue-600 hover:text-blue-700">Download PDF &rarr;</button>
+                                </div>
+                            </div>
+
+                            <div class="page-note-card bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between" data-dept="ECE" data-sem="S6">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-3">
+                                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-md">ECE • S6</span>
+                                        <span class="text-xs text-slate-500"><i class="fa-regular fa-file-pdf text-red-500 mr-1"></i> PYQs Included</span>
+                                    </div>
+                                    <h3 class="font-bold text-slate-900 text-base mb-1">Digital Signal Processing (ECT 304)</h3>
+                                    <p class="text-xs text-slate-600 line-clamp-2 mb-4">DFT, FFT algorithms, FIR/IIR filter design, and DSP architecture notes.</p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-xs">
+                                    <span class="text-slate-500 font-medium">IEEE SB Upload</span>
+                                    <button onclick="downloadNote('Digital Signal Processing')" class="font-bold text-blue-600 hover:text-blue-700">Download PDF &rarr;</button>
+                                </div>
+                            </div>
+
+                            <div class="page-note-card bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between" data-dept="ME" data-sem="S6">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-3">
+                                        <span class="px-2.5 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-md">ME • S6</span>
+                                        <span class="text-xs text-slate-500"><i class="fa-regular fa-file-pdf text-red-500 mr-1"></i> Solved Papers</span>
+                                    </div>
+                                    <h3 class="font-bold text-slate-900 text-base mb-1">Heat & Mass Transfer (MET 302)</h3>
+                                    <p class="text-xs text-slate-600 line-clamp-2 mb-4">Conduction equations, heat exchanger NTU method, radiation laws.</p>
+                                </div>
+                                <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-xs">
+                                    <span class="text-slate-500 font-medium">Mechanical Association</span>
+                                    <button onclick="downloadNote('Heat & Mass Transfer')" class="font-bold text-blue-600 hover:text-blue-700">Download PDF &rarr;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2: Stay on Schedule (Calendar & Timeline) -->
+            <div id="page-schedule" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+                            <div>
+                                <span class="badge-pill">ACADEMIC CALENDAR</span>
+                                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Stay On Schedule</h2>
+                                <p class="text-xs text-slate-500 mt-1">Timeline of upcoming KTU semester exams, internal evaluations, and holiday dates.</p>
+                            </div>
+                            <button onclick="showToast('Academic Calendar (.ics) exported to calendar app!')" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow-2xs inline-flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-plus"></i> Export to iCal / Google Calendar
+                            </button>
+                        </div>
+
+                        <!-- Schedule Timeline Cards -->
+                        <div class="mt-6 space-y-4">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex flex-col items-center justify-center font-bold shrink-0">
+                                        <span class="text-xs uppercase leading-none">MAR</span>
+                                        <span class="text-lg leading-none mt-1">18</span>
+                                    </div>
+                                    <div>
+                                        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[10px] uppercase">KTU Internal Exam 2</span>
+                                        <h3 class="font-bold text-slate-900 text-sm mt-1">S6 CSE & ECE Series Test II</h3>
+                                        <p class="text-xs text-slate-500">Covers Modules 3 & 4. Attendance mandatory for internal evaluation.</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 text-center shrink-0">10 Days Away</span>
+                            </div>
+
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex flex-col items-center justify-center font-bold shrink-0">
+                                        <span class="text-xs uppercase leading-none">APR</span>
+                                        <span class="text-lg leading-none mt-1">05</span>
+                                    </div>
+                                    <div>
+                                        <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[10px] uppercase">Project Submission</span>
+                                        <h3 class="font-bold text-slate-900 text-sm mt-1">S8 Main Project Phase II Interim Demo</h3>
+                                        <p class="text-xs text-slate-500">Submission of draft thesis report and prototype verification at department labs.</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 text-center shrink-0">28 Days Away</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 3: What's Happening (Events) -->
+            <div id="page-events" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+                            <div>
+                                <span class="badge-pill">CAMPUS EVENTS</span>
+                                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">What's Happening @ TKMCE</h2>
+                                <p class="text-xs text-slate-500 mt-1">Register for technical workshops, hackathons, and cultural fests.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                                <div>
+                                    <span class="px-2.5 py-1 bg-purple-100 text-purple-700 font-bold text-xs rounded-md">TECHNICAL SYMPOSIUM</span>
+                                    <h3 class="text-lg font-bold text-slate-900 mt-3">Hestia 2026 Tech Fest</h3>
+                                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">Annual flagship technical & cultural festival featuring 40+ events, robotics hackathons, and keynotes.</p>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-xs">
+                                    <span class="text-slate-500 font-semibold"><i class="fa-regular fa-clock mr-1"></i> Apr 12 - 15, 2026</span>
+                                    <button onclick="showToast('Event Registration Portal Opening Soon!')" class="bg-blue-600 text-white font-bold px-3 py-1.5 rounded-md hover:bg-blue-700">Register Now</button>
+                                </div>
+                            </div>
+
+                            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                                <div>
+                                    <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 font-bold text-xs rounded-md">WORKSHOP</span>
+                                    <h3 class="text-lg font-bold text-slate-900 mt-3">ROS2 & Robotics Bootcamp</h3>
+                                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">Hands-on workshop on Robot Operating System 2 organized by Team DronA SAE TKMCE.</p>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-xs">
+                                    <span class="text-slate-500 font-semibold"><i class="fa-regular fa-clock mr-1"></i> Mar 22, 2026</span>
+                                    <button onclick="showToast('Bootcamp Seat Reserved!')" class="bg-blue-600 text-white font-bold px-3 py-1.5 rounded-md hover:bg-blue-700">Reserve Seat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 4: There's a Club for That -->
+            <div id="page-clubs" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="pb-6 border-b border-slate-200">
+                            <span class="badge-pill">CLUBS & SOCIETIES</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">There's a Club for That</h2>
+                            <p class="text-xs text-slate-500 mt-1">Explore student chapters, open-source cells, and technical bodies on campus.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg mb-3">IEEE</div>
+                                    <h3 class="font-bold text-slate-900 text-base">IEEE Student Branch TKMCE</h3>
+                                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">Technical workshops, international student conferences, and paper publication mentorship.</p>
+                                </div>
+                                <button onclick="showToast('Membership request sent to IEEE Lead')" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2 rounded-lg">Join Chapter</button>
+                            </div>
+
+                            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg mb-3">FOSS</div>
+                                    <h3 class="font-bold text-slate-900 text-base">FOSS Cell TKMCE</h3>
+                                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">Promoting Open Source software development, Linux bootcamps, and GSOC preparation.</p>
+                                </div>
+                                <button onclick="showToast('FOSS Cell Slack Invite Sent!')" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2 rounded-lg">Join Chapter</button>
+                            </div>
+
+                            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold text-lg mb-3">IEDC</div>
+                                    <h3 class="font-bold text-slate-900 text-base">IEDC Startup Cell</h3>
+                                    <p class="text-xs text-slate-600 mt-2 leading-relaxed">Innovation and Entrepreneurship Development Centre facilitating seed grants & incubation.</p>
+                                </div>
+                                <button onclick="showToast('IEDC Mentor Connect Initiated')" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2 rounded-lg">Join Chapter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 5: Senior Circle (Mentorship) -->
+            <div id="page-seniors" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="pb-6 border-b border-slate-200">
+                            <span class="badge-pill">PEER MENTORSHIP</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Senior Circle Directory</h2>
+                            <p class="text-xs text-slate-500 mt-1">Connect with final year students for career advice, GATE guidance, and placements.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div class="p-5 border border-slate-200 rounded-xl bg-slate-50 flex items-start justify-between">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold text-[10px] rounded">S8 CSE • GATE AIR 142</span>
+                                    <h3 class="font-bold text-slate-900 text-base mt-2">Arjun V. Nair</h3>
+                                    <p class="text-xs text-slate-600 mt-1">Specializes in: Data Structures, GATE CS strategy, and IIT M.Tech admission process.</p>
+                                </div>
+                                <button onclick="showToast('Contact request sent to Arjun!')" class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-md hover:bg-blue-700 shrink-0">Request Connect</button>
+                            </div>
+
+                            <div class="p-5 border border-slate-200 rounded-xl bg-slate-50 flex items-start justify-between">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded">S8 ECE • Hardware Firmware Eng</span>
+                                    <h3 class="font-bold text-slate-900 text-base mt-2">Devika Krishna</h3>
+                                    <p class="text-xs text-slate-600 mt-1">Specializes in: Embedded Systems, Texas Instruments Contest, and core ECE placements.</p>
+                                </div>
+                                <button onclick="showToast('Contact request sent to Devika!')" class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-md hover:bg-blue-700 shrink-0">Request Connect</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 6: Funding Finder (Scholarships) -->
+            <div id="page-funding" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="pb-6 border-b border-slate-200">
+                            <span class="badge-pill">SCHOLARSHIP DATABASE</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Funding Finder</h2>
+                            <p class="text-xs text-slate-500 mt-1">Discover Govt, KTU, and TKMCE Alumni scholarship schemes.</p>
+                        </div>
+
+                        <div class="space-y-4 mt-6">
+                            <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px] uppercase">Merit-cum-Means</span>
+                                    <h3 class="font-bold text-slate-900 text-sm mt-1">E-Grantz 3.0 State Higher Education Grant</h3>
+                                    <p class="text-xs text-slate-500">Full tuition fee reimbursement for eligible reservation & BPL category KTU engineering students.</p>
+                                </div>
+                                <button onclick="showToast('Redirecting to E-Grantz portal...')" class="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-700 shrink-0">Apply & Criteria</button>
+                            </div>
+
+                            <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[10px] uppercase">Alumni Trust</span>
+                                    <h3 class="font-bold text-slate-900 text-sm mt-1">TKMCE Alumni Association Emergency Financial Aid</h3>
+                                    <p class="text-xs text-slate-500">Stipend grant up to ₹25,000/year for deserving students based on academic performance and need.</p>
+                                </div>
+                                <button onclick="showToast('Alumni Scholarship Form Loaded')" class="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-700 shrink-0">Apply & Criteria</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 7: Women Safety & Helpline -->
+            <div id="page-safety" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border-2 border-blue-600 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="pb-6 border-b border-slate-200">
+                            <span class="badge-pill">CAMPUS WELFARE & SAFETY</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Women Safety & Confidential Support Desk</h2>
+                            <p class="text-xs text-slate-500 mt-1">Direct contact numbers for campus security desk and Internal Complaints Committee (ICC).</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div class="p-5 bg-blue-50 border border-blue-200 rounded-xl space-y-3">
+                                <h3 class="font-bold text-blue-900 text-base">24/7 Campus Emergency Contacts</h3>
+                                <div class="text-xs space-y-2 font-semibold text-slate-700">
+                                    <div class="flex justify-between border-b border-blue-200 pb-1"><span>Main Gate Security Booth:</span> <a href="tel:04742712000" class="text-blue-700 font-bold">0474-2712000</a></div>
+                                    <div class="flex justify-between border-b border-blue-200 pb-1"><span>Women Warden Office:</span> <a href="tel:04742712005" class="text-blue-700 font-bold">0474-2712005</a></div>
+                                    <div class="flex justify-between"><span>Kilikollur Police Control:</span> <a href="tel:112" class="text-blue-700 font-bold">112 / 1091</a></div>
+                                </div>
+                            </div>
+
+                            <form onsubmit="submitGenericForm(event, 'Confidential complaint logged with ICC Presiding Officer')" class="space-y-3 text-xs">
+                                <h3 class="font-bold text-slate-900 text-base">Log Confidential Grievance</h3>
+                                <input type="text" required placeholder="Name (Optional)" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg">
+                                <textarea rows="3" required placeholder="Describe issue confidentially..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg"></textarea>
+                                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg hover:bg-blue-700">Submit Encrypted Report</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 8: Rooms and Rations (Hostels & Mess) -->
+            <div id="page-hostel" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="pb-6 border-b border-slate-200">
+                            <span class="badge-pill">HOSTELS & DINING</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Rooms & Rations Directory</h2>
+                            <p class="text-xs text-slate-500 mt-1">Weekly mess menu rotation and verified Karicode PGs & student room rentals.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div class="p-5 border border-slate-200 rounded-xl bg-slate-50">
+                                <h3 class="font-bold text-slate-900 text-base mb-3"><i class="fa-solid fa-utensils text-blue-600 mr-2"></i> Central Mess Menu Rotation</h3>
+                                <ul class="text-xs space-y-2 text-slate-700 font-medium">
+                                    <li class="flex justify-between border-b pb-1"><span>Monday:</span> <span>Appam, Veg Stew / Fish Curry & Rice</span></li>
+                                    <li class="flex justify-between border-b pb-1"><span>Tuesday:</span> <span>Puttu, Kadala Curry / Chicken Curry & Rice</span></li>
+                                    <li class="flex justify-between border-b pb-1"><span>Wednesday:</span> <span>Dosa, Sambar / Egg Curry & Special Feast</span></li>
+                                    <li class="flex justify-between"><span>Thursday:</span> <span>Idli, Chutney / Meals & Special Payasam</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="p-5 border border-slate-200 rounded-xl bg-slate-50">
+                                <h3 class="font-bold text-slate-900 text-base mb-3"><i class="fa-solid fa-house text-blue-600 mr-2"></i> Verified Karicode PG Vacancies</h3>
+                                <div class="space-y-3 text-xs">
+                                    <div class="p-3 bg-white rounded-lg border border-slate-200 flex justify-between items-center">
+                                        <div>
+                                            <h4 class="font-bold text-slate-900">GreenVilla PG for Men</h4>
+                                            <p class="text-slate-500 text-[11px]">200m from Backgate • ₹4,200/mo</p>
+                                        </div>
+                                        <button onclick="showToast('Calling GreenVilla Manager: 9447000000')" class="bg-blue-600 text-white font-bold px-3 py-1.5 rounded">Call</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 9: Neighbourhood Cheat Sheet -->
+            <div id="page-cheatsheet" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="pb-6 border-b border-slate-200">
+                            <span class="badge-pill">LOCAL AMENITIES</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Neighbourhood Cheat Sheet</h2>
+                            <p class="text-xs text-slate-500 mt-1">Services around Karicode Junction, Kilikollur, and TKM Main Gate.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                            <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 text-xs">
+                                <span class="font-bold text-slate-900 block text-sm"><i class="fa-solid fa-print text-blue-600 mr-2"></i> Express Copy Center</span>
+                                <p class="text-slate-500 mt-1">Xerox, CAD Plotting & Spiral Binding.</p>
+                                <span class="text-emerald-700 font-bold block mt-2">Open 8 AM - 9 PM</span>
+                            </div>
+
+                            <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 text-xs">
+                                <span class="font-bold text-slate-900 block text-sm"><i class="fa-solid fa-bus text-emerald-600 mr-2"></i> Karicode Bus Stop</span>
+                                <p class="text-slate-500 mt-1">Buses every 5 mins to Kollam KSRTC / Junction.</p>
+                                <span class="text-blue-700 font-bold block mt-2">Frequent Transit</span>
+                            </div>
+
+                            <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 text-xs">
+                                <span class="font-bold text-slate-900 block text-sm"><i class="fa-solid fa-notes-medical text-red-500 mr-2"></i> Karicode MedStore</span>
+                                <p class="text-slate-500 mt-1">24/7 First aid, medicines & emergency care.</p>
+                                <span class="text-emerald-700 font-bold block mt-2">24 Hours Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 10: Interactive Campus Map View -->
+            <div id="page-map" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="pb-6 border-b border-slate-200">
+                            <span class="badge-pill">2D BLUEPRINT</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">TKMCE Interactive Blueprint Map</h2>
+                            <p class="text-xs text-slate-500 mt-1">Click location pins on the map blueprint below to inspect department desks.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mt-6">
+                            <div class="lg:col-span-8 bg-slate-950 border border-slate-800 rounded-xl p-3 relative aspect-video overflow-hidden">
+                                <svg class="w-full h-full" viewBox="0 0 800 450" fill="none">
+                                    <rect width="800" height="450" fill="#0f172a"/>
+                                    <path d="M 50 225 Q 400 225 750 225" stroke="#334155" stroke-width="24"/>
+                                    <rect x="140" y="100" width="160" height="80" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+                                    <text x="220" y="145" fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle">ADMIN BLOCK</text>
+                                    <rect x="480" y="90" width="180" height="90" rx="6" fill="#1e293b" stroke="#0284c7" stroke-width="2"/>
+                                    <text x="570" y="140" fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle">APJ AUDITORIUM</text>
+                                    <rect x="140" y="270" width="180" height="100" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                                    <text x="230" y="325" fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle">CSE / ECE BLOCK</text>
+                                    <circle cx="400" cy="225" r="35" fill="#1e293b" stroke="#ec4899" stroke-width="2"/>
+                                    <text x="400" y="229" fill="#94a3b8" font-size="10" font-weight="bold" text-anchor="middle">CANTEEN</text>
+                                </svg>
+                                <button onclick="showLocation('admin')" class="map-pin absolute top-[28%] left-[26%] bg-blue-600 text-white w-8 h-8 rounded-full font-bold text-xs shadow-lg border-2 border-white">1</button>
+                                <button onclick="showLocation('apj')" class="map-pin absolute top-[28%] left-[71%] bg-sky-500 text-white w-8 h-8 rounded-full font-bold text-xs shadow-lg border-2 border-white">2</button>
+                                <button onclick="showLocation('cs')" class="map-pin absolute top-[70%] left-[28%] bg-emerald-500 text-white w-8 h-8 rounded-full font-bold text-xs shadow-lg border-2 border-white">3</button>
+                                <button onclick="showLocation('canteen')" class="map-pin absolute top-[50%] left-[50%] bg-pink-500 text-white w-8 h-8 rounded-full font-bold text-xs shadow-lg border-2 border-white">4</button>
+                            </div>
+
+                            <div class="lg:col-span-4 bg-slate-50 border border-slate-200 rounded-xl p-5" id="page-map-card">
+                                <span class="text-[10px] font-bold text-blue-600 uppercase">PIN DETAILS</span>
+                                <h3 id="page-loc-title" class="text-xl font-bold text-slate-900 mt-1">Main Admin Block</h3>
+                                <p id="page-loc-desc" class="text-xs text-slate-600 mt-2 leading-relaxed">Houses Principal's Office, Exam Controller section, KTU desk, and Accounts desk.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 11: Hackathon Team Matchmaker View -->
+            <div id="page-teamup" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+                            <div>
+                                <span class="badge-pill">TEAM MATCHMAKER</span>
+                                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Hackathon Team Finder</h2>
+                                <p class="text-xs text-slate-500 mt-1">Pair up with TKMCE coders and designers for hackathons.</p>
+                            </div>
+                            <button onclick="openModal('teamup-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg">
+                                <i class="fa-solid fa-plus mr-1"></i> Post Vacancy
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                                <div>
+                                    <span class="px-2.5 py-1 bg-blue-100 text-blue-700 font-bold text-xs rounded-md">Smart India Hackathon 2026</span>
+                                    <h3 class="font-bold text-slate-900 text-base mt-3">Team NeuralCraft (S6 CSE)</h3>
+                                    <p class="text-xs text-slate-600 mt-2">Seeking PyTorch / OpenCV developer for AI traffic optimization.</p>
+                                </div>
+                                <button onclick="connectTeam('Ashwin (S6 CSE)')" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2 rounded-lg">Connect Lead &rarr;</button>
+                            </div>
+
+                            <div class="border border-slate-200 rounded-xl p-5 bg-slate-50 flex flex-col justify-between">
+                                <div>
+                                    <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 font-bold text-xs rounded-md">IEEE TechExpo 2026</span>
+                                    <h3 class="font-bold text-slate-900 text-base mt-3">Team DronA Hardware</h3>
+                                    <p class="text-xs text-slate-600 mt-2">Seeking STM32 firmware dev for payload delivery drone platform.</p>
+                                </div>
+                                <button onclick="connectTeam('Rahul (S6 EEE)')" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2 rounded-lg">Connect Lead &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 12: Venue Booking View -->
+            <div id="page-venue" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+                            <div>
+                                <span class="badge-pill">RESERVATIONS</span>
+                                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Venue Date Booking Schedule</h2>
+                                <p class="text-xs text-slate-500 mt-1">Reserve APJ Abdul Kalam Auditorium or Central Auditorium for events.</p>
+                            </div>
+                            <button onclick="openModal('venue-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-lg">
+                                <i class="fa-solid fa-calendar-plus mr-1"></i> Reserve Date Slot
+                            </button>
+                        </div>
+
+                        <div class="mt-6 overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 uppercase">
+                                        <th class="p-3">Venue Name</th>
+                                        <th class="p-3">Date</th>
+                                        <th class="p-3">Event Title</th>
+                                        <th class="p-3 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 font-medium">
+                                    <tr>
+                                        <td class="p-3 font-bold text-slate-900">APJ Abdul Kalam Auditorium</td>
+                                        <td class="p-3">24 Mar 2026</td>
+                                        <td class="p-3">IEEE Keynote Summit</td>
+                                        <td class="p-3 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full">Confirmed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-bold text-slate-900">Central Auditorium</td>
+                                        <td class="p-3">28 Mar 2026</td>
+                                        <td class="p-3">Robotics Expo</td>
+                                        <td class="p-3 text-center"><span class="px-2 py-1 bg-amber-100 text-amber-800 font-bold text-[10px] rounded-full">Pending</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 13: Ask Launchpad (Got Questions?) -->
+            <div id="page-ask" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-blue-600 rounded-2xl p-6 sm:p-8 text-white shadow-md">
+                        <span class="badge-pill-white">INQUIRY DESK</span>
+                        <h2 class="text-2xl sm:text-3xl font-black uppercase tracking-tight mt-1">Got Questions?</h2>
+                        <p class="text-xs text-blue-100 mt-1">Submit your academic or administrative queries to Minnarets Launchpad desk.</p>
+
+                        <form onsubmit="submitGenericForm(event, 'Query logged! Response will be emailed to your student portal ID.')" class="mt-6 max-w-xl space-y-3 text-xs text-slate-900">
+                            <input type="text" required placeholder="Your Student Name & Roll No" class="w-full p-3 rounded-lg bg-white border border-blue-300">
+                            <textarea rows="4" required placeholder="Type your query regarding KTU exams, certificates, or hostel rules..." class="w-full p-3 rounded-lg bg-white border border-blue-300"></textarea>
+                            <button type="submit" class="bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs px-5 py-3 rounded-lg">Submit Question</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 14: Raise Issue View -->
+            <div id="page-issue" class="page-view hidden py-10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                    <div class="bg-blue-600 rounded-2xl p-6 sm:p-8 text-white shadow-md">
+                        <span class="badge-pill-white">STUDENT WELFARE</span>
+                        <h2 class="text-2xl sm:text-3xl font-black uppercase tracking-tight mt-1">Raise Campus Issue</h2>
+                        <p class="text-xs text-blue-100 mt-1">Report campus infrastructure, hostel mess quality, or portal issues to ICU.</p>
+
+                        <form onsubmit="submitGenericForm(event, 'Issue ticket logged with ICU Welfare Desk!')" class="mt-6 max-w-xl space-y-3 text-xs text-slate-900">
+                            <select class="w-full p-3 rounded-lg bg-white border border-blue-300 font-semibold">
+                                <option>Hostel Mess & Dining Quality</option>
+                                <option>Water / Sanitation Facility</option>
+                                <option>Campus Wi-Fi / Portal Bug</option>
+                            </select>
+                            <textarea rows="4" required placeholder="Provide details of the issue..." class="w-full p-3 rounded-lg bg-white border border-blue-300"></textarea>
+                            <button type="submit" class="bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs px-5 py-3 rounded-lg">Log Ticket</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODALS ENGINE -->
+    <!-- Teammate Request Modal -->
+    <div id="teamup-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-xl relative">
+            <button onclick="closeModal('teamup-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-slate-900 mb-1">Post Team Vacancy</h3>
+            <p class="text-xs text-slate-500 mb-4">Recruit TKMCE students for upcoming hackathons.</p>
+
+            <form onsubmit="submitGenericForm(event, 'Team request published!')" class="space-y-3 text-xs">
+                <input type="text" required placeholder="Hackathon Title" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg">
+                <input type="text" required placeholder="Your Name & Semester" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg">
+                <textarea rows="3" required placeholder="Required skills (e.g., Python, React, STM32)..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg"></textarea>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg">Publish Requirement</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Venue Request Modal -->
+    <div id="venue-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-xl relative">
+            <button onclick="closeModal('venue-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-slate-900 mb-1">Request Venue Date Slot</h3>
+            <form onsubmit="submitGenericForm(event, 'Venue slot request submitted!')" class="space-y-3 text-xs mt-3">
+                <select class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg">
+                    <option>APJ Abdul Kalam Auditorium</option>
+                    <option>Central Auditorium Main Hall</option>
+                </select>
+                <input type="date" required class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Note Modal -->
+    <div id="upload-note-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-xl relative">
+            <button onclick="closeModal('upload-note-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-slate-900 mb-1">Upload KTU Study Material</h3>
+            <form onsubmit="submitGenericForm(event, 'Note PDF submitted for review!')" class="space-y-3 text-xs mt-3">
+                <input type="text" required placeholder="Subject & Code (e.g. CST 302 Compiler)" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg">
+                <select class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg">
+                    <option>Computer Science (CSE)</option>
+                    <option>Electronics (ECE)</option>
+                    <option>Mechanical (ME)</option>
+                </select>
+                <input type="file" required class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg">Submit File</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Banner -->
+    <div id="toast-box" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-lg shadow-xl hidden flex items-center gap-2 z-50">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-message">Action completed.</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-slate-400 text-xs py-10 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">M</div>
+                <div>
+                    <span class="font-extrabold text-sm text-white tracking-tight">MINNARETS TKMCE</span>
+                    <span class="block text-[10px] text-slate-500">Karicode, Kollam • Integrated Campus Platform</span>
+                </div>
+            </div>
+            <p class="text-slate-500 text-[11px]">&copy; 2026 Minnarets TKMCE Portal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JS Routing & Logic -->
+    <script>
+        // SPA PAGE NAVIGATION ROUTER
+        function openPageView(pageId) {
+            // Hide main dashboard
+            document.getElementById('main-dashboard-view').classList.add('hidden');
+            
+            // Show container
+            const container = document.getElementById('page-views-container');
+            container.classList.remove('hidden');
+
+            // Hide all sub pages
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+
+            // Show selected page
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Update breadcrumb text
+                const formattedName = pageId.replace('page-', '').toUpperCase();
+                document.getElementById('page-title-breadcrumb').innerText = `${formattedName} MODULE`;
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('page-views-container').classList.add('hidden');
+            document.getElementById('main-dashboard-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Campus Map Pins Logic
+        const locations = {
+            admin: {
+                title: "TKMCE Main Admin Building",
+                desc: "Houses Principal's office, KTU Exam Section, Academic Accounts desk, and Main Conference Room."
+            },
+            apj: {
+                title: "APJ Abdul Kalam Auditorium",
+                desc: "Primary multi-purpose air-conditioned auditorium with 800+ seating capacity for college fests & Tech Summits."
+            },
+            cs: {
+                title: "CSE & ECE Department Block",
+                desc: "Contains Advanced AI Labs, Embedded Systems Hardware Labs, CCF Workstations, and Department Libraries."
+            },
+            canteen: {
+                title: "TKMCE Central Campus Canteen",
+                desc: "Serves fresh meals, snacks, Kerala tea, and beverages for students and staff members daily."
+            }
+        };
+
+        function showLocation(key) {
+            const data = locations[key];
+            if (!data) return;
+            const titleEl = document.getElementById('page-loc-title');
+            const descEl = document.getElementById('page-loc-desc');
+            if (titleEl) titleEl.innerText = data.title;
+            if (descEl) descEl.innerText = data.desc;
+        }
+
+        // Academic Workspace Filtering
+        let selectedPageSem = 'S6';
+        function selectPageSem(sem) {
+            selectedPageSem = sem;
+            document.querySelectorAll('.page-sem-btn').forEach(btn => {
+                if (btn.innerText.includes(sem) || (sem === 'S1' && btn.innerText.includes('S1 & S2'))) {
+                    btn.className = "page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-blue-600 text-white shadow-2xs";
+                } else {
+                    btn.className = "page-sem-btn px-4 py-2 rounded-lg font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200";
+                }
+            });
+            filterPageNotes();
+        }
+
+        function filterPageNotes() {
+            const dept = document.getElementById('page-dept-select').value;
+            document.querySelectorAll('.page-note-card').forEach(card => {
+                const cardDept = card.getAttribute('data-dept');
+                const cardSem = card.getAttribute('data-sem');
+                card.style.display = ((dept === 'all' || cardDept === dept) && cardSem === selectedPageSem) ? 'flex' : 'none';
+            });
+        }
+
+        // Dashboard Search Filter
+        function handleGlobalSearch() {
+            const query = document.getElementById('hero-search').value.toLowerCase();
+            document.querySelectorAll('#main-dashboard-view .card-item').forEach(card => {
+                const cat = card.getAttribute('data-category') || '';
+                card.style.display = cat.toLowerCase().includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        // Utility Modal & Toast Controls
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function toggleMobileNav() { document.getElementById('mobile-nav').classList.toggle('hidden'); }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-box');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3500);
+        }
+
+        function downloadNote(t) { showToast(`Downloading KTU PDF: ${t}...`); }
+        function connectTeam(l) { showToast(`Connecting to team lead: ${l}`); }
+
+        function submitGenericForm(e, msg) {
+            e.preventDefault();
+            const modal = e.target.closest('.fixed');
+            if (modal) modal.classList.add('hidden');
+            showToast(msg);
+        }
+    </script>
+</body>
+</html>
