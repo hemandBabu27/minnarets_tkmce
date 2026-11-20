@@ -152,11 +152,10 @@ body, header, footer, button, a, select, input, textarea,
 </script>
 
 <style id="minnarets-bgm-style">
-  #minnarets-bgm-control{position:fixed;right:18px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #e2e8f0;border-radius:999px;background:rgba(255,255,255,.96);box-shadow:0 8px 28px rgba(15,23,42,.14);font:600 13px 'Source Sans 3',sans-serif;color:#0f172a;backdrop-filter:blur(12px)}
-  #minnarets-bgm-control button{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:999px;padding:7px 11px;background:var(--campus-accent,#2563eb);color:#fff;cursor:pointer}
+  #minnarets-bgm-control{position:fixed;top:18px;right:18px;z-index:9999;display:flex;align-items:center;padding:5px;border:1px solid #e2e8f0;border-radius:999px;background:rgba(255,255,255,.96);box-shadow:0 8px 28px rgba(15,23,42,.14);backdrop-filter:blur(12px)}
+  #minnarets-bgm-control button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:92px;border:0;border-radius:999px;padding:8px 13px;background:var(--campus-accent,#2563eb);color:#fff;font:600 13px 'Source Sans 3',sans-serif;cursor:pointer}
   #minnarets-bgm-control button:focus-visible{outline:3px solid var(--campus-accent,#2563eb);outline-offset:3px}
-  #minnarets-bgm-status{white-space:nowrap}
-  @media(max-width:480px){#minnarets-bgm-control{right:10px;bottom:10px;padding:7px 9px}#minnarets-bgm-status{display:none}}
+  @media(max-width:480px){#minnarets-bgm-control{top:10px;right:10px}#minnarets-bgm-control button{min-width:84px;padding:7px 10px}}
 </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -1252,51 +1251,40 @@ publishLocalData().catch(error => {
 });
 </script>
 <audio id="minnarets-bgm" src="./assets/kiravale-love-bgm-598115.mp3" preload="auto" loop></audio>
-<div id="minnarets-bgm-control" role="group" aria-label="Background music controls">
-  <span id="minnarets-bgm-status">Background music</span>
-  <button id="minnarets-bgm-play" type="button" aria-label="Play background music"><i class="fa-solid fa-play" aria-hidden="true"></i><span>Play</span></button>
-  <button id="minnarets-bgm-mute" type="button" aria-label="Mute background music" aria-pressed="false"><i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Mute</span></button>
+<div id="minnarets-bgm-control">
+  <button id="minnarets-bgm-mute" type="button" aria-label="Mute background music" aria-pressed="false">
+    <i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Mute</span>
+  </button>
 </div>
 <script id="minnarets-bgm-logic">
 (function(){
   const audio=document.getElementById('minnarets-bgm');
-  const play=document.getElementById('minnarets-bgm-play');
   const mute=document.getElementById('minnarets-bgm-mute');
-  const status=document.getElementById('minnarets-bgm-status');
-  if(!audio||!play||!mute)return;
+  if(!audio||!mute)return;
   audio.loop=true;
-  audio.volume=0.35;
+  audio.volume=0.5;
   try{audio.muted=localStorage.getItem('minnarets_bgm_muted')==='true';}catch(e){}
   function paint(){
-    const playing=!audio.paused;
-    play.innerHTML=playing?'<i class="fa-solid fa-pause" aria-hidden="true"></i><span>Pause</span>':'<i class="fa-solid fa-play" aria-hidden="true"></i><span>Play</span>';
-    play.setAttribute('aria-label',playing?'Pause background music':'Play background music');
-    mute.innerHTML=audio.muted?'<i class="fa-solid fa-volume-xmark" aria-hidden="true"></i><span>Unmute</span>':'<i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Mute</span>';
+    mute.innerHTML=audio.muted
+      ? '<i class="fa-solid fa-volume-xmark" aria-hidden="true"></i><span>Unmute</span>'
+      : '<i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Mute</span>';
     mute.setAttribute('aria-label',audio.muted?'Unmute background music':'Mute background music');
     mute.setAttribute('aria-pressed',String(audio.muted));
-    status.textContent=audio.paused?'Music paused':'Playing in background';
   }
   async function start(){
-    try{await audio.play();status.textContent='Playing in background';}
-    catch(e){status.textContent='Tap Play to start music';}
-    paint();
+    if(audio.muted)return;
+    try{await audio.play();}catch(e){/* Browser may require a user gesture. */}
   }
-  play.addEventListener('click',()=>{if(audio.paused)start();else{audio.pause();paint();}});
   mute.addEventListener('click',()=>{
     audio.muted=!audio.muted;
     try{localStorage.setItem('minnarets_bgm_muted',String(audio.muted));}catch(e){}
-    if(!audio.muted&&audio.paused)start();
+    if(!audio.muted)start();
     paint();
   });
-  audio.addEventListener('play',paint);
-  audio.addEventListener('pause',paint);
-  audio.addEventListener('error',()=>{status.textContent='Add the BGM file to /assets';});
   paint();
-  // Attempt autoplay; if the browser blocks audible autoplay, begin on the
-  // visitor's first interaction anywhere on the page.
   start();
   const unlockPlayback=()=>{
-    if(audio.paused&&!audio.muted) start();
+    if(audio.paused&&!audio.muted)start();
     document.removeEventListener('pointerdown',unlockPlayback);
     document.removeEventListener('keydown',unlockPlayback);
   };
