@@ -1040,11 +1040,11 @@ if(id==='music'){const inp=document.getElementById('campus-audio-file'),audio=do
 })();
 </script>
 
-<!-- Firebase authentication + cross-device Firestore sync -->
+<!-- Public Firestore sync: no account or login required -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js';
+import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js';
+
 const firebaseConfig = {
   apiKey: "AIzaSyD9GBO1yeehBAzpoxjGH4X-x6YH69WvNqg",
   authDomain: "minnarets-tkmce.firebaseapp.com",
@@ -1054,20 +1054,87 @@ const firebaseConfig = {
   appId: "1:473284044346:web:45d8ce741241b9beb4f703",
   measurementId: "G-5YFY84389V"
 };
-const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app), provider=new GoogleAuthProvider();
-const prefix='minnarets_', unsubscribers=new Map(); let cloudWriteKeys=new Set(), activeUser=null;
-const authMount=document.createElement('div'); authMount.id='minnarets-auth'; authMount.className='flex items-center gap-2';
-authMount.innerHTML='<span id="minnarets-auth-status" class="hidden sm:inline text-xs text-slate-500">Cloud sync off</span><button id="minnarets-login" class="border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-semibold">Sign in to sync</button><button id="minnarets-logout" class="hidden border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-sm font-semibold">Sign out</button>';
-const headerActions=document.querySelector('header .flex.items-center.space-x-3'); if(headerActions) headerActions.prepend(authMount);
-const statusEl=()=>document.getElementById('minnarets-auth-status');
-document.getElementById('minnarets-login').onclick=async()=>{try{await signInWithPopup(auth,provider)}catch(e){alert('Sign-in failed: '+(e.message||e.code))}};
-document.getElementById('minnarets-logout').onclick=()=>signOut(auth);
-function stopSync(){unsubscribers.forEach(fn=>fn());unsubscribers.clear();cloudWriteKeys.clear()}
-function keys(){return [...new Set(Object.keys(localStorage).filter(k=>k.startsWith(prefix)).map(k=>k.slice(prefix.length)))].filter(Boolean)}
-function applyCloud(key,value,refresh=false){const old=localStorage.getItem(prefix+key);const next=JSON.stringify(value);localStorage.setItem(prefix+key,next);cloudWriteKeys.add(key);if(refresh&&old!==next)location.reload();}
-async function syncKey(key){const ref=doc(db,'campusData',key), snap=await getDoc(ref);if(snap.exists()){applyCloud(key,snap.data().value??[])}else{const local=JSON.parse(localStorage.getItem(prefix+key)||'[]');await setDoc(ref,{value:local,updatedAt:serverTimestamp(),updatedBy:activeUser.uid});}if(unsubscribers.has(key))unsubscribers.get(key)();const unsubscribe=onSnapshot(ref,s=>{if(!s.exists())return;const remote=s.data().value??[];const local=JSON.parse(localStorage.getItem(prefix+key)||'[]');if(JSON.stringify(remote)!==JSON.stringify(local))applyCloud(key,remote,true)},err=>console.warn('Minnarets sync listener:',err));unsubscribers.set(key,unsubscribe)}
-onAuthStateChanged(auth,async user=>{activeUser=user;stopSync();const login=document.getElementById('minnarets-login'),logout=document.getElementById('minnarets-logout'),status=statusEl();if(user){login.classList.add('hidden');logout.classList.remove('hidden');status.textContent='Signed in · sync enabled';status.classList.remove('hidden');try{await Promise.all(keys().map(syncKey))}catch(e){console.error(e);status.textContent='Sync error · check Firestore setup'}}else{login.classList.remove('hidden');logout.classList.add('hidden');status.textContent='Cloud sync off';status.classList.remove('hidden')}});
-window.minnaretsCloudSave=async(key,value)=>{if(!auth.currentUser)return;try{if(!unsubscribers.has(key))await syncKey(key);await setDoc(doc(db,'campusData',key),{value,updatedAt:serverTimestamp(),updatedBy:auth.currentUser.uid});}catch(e){console.error('Cloud save failed:',e);alert('Could not sync this entry. Check Firestore rules and internet connection.')}};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const prefix = 'minnarets_';
+let applyingRemote = false;
+let saveQueue = Promise.resolve();
+
+function localKeys() {
+  return [...new Set(Object.keys(localStorage)
+    .filter(k => k.startsWith(prefix))
+    .map(k => k.slice(prefix.length)))]
+    .filter(Boolean);
+}
+
+function parseLocal(key) {
+  try { return JSON.parse(localStorage.getItem(prefix + key) || '[]'); }
+  catch { return []; }
+}
+
+async function publishLocalData() {
+  for (const key of localKeys()) {
+    const ref = doc(db, 'campusData', key);
+    const snap = await getDoc(ref);
+    // Preserve existing cloud data; seed only documents that do not exist yet.
+    if (!snap.exists()) {
+      await setDoc(ref, {
+        value: parseLocal(key),
+        updatedAt: serverTimestamp(),
+        updatedBy: 'public-visitor'
+      });
+    }
+  }
+}
+
+window.minnaretsCloudSave = (key, value) => {
+  if (applyingRemote) return Promise.resolve();
+  saveQueue = saveQueue.then(() => setDoc(doc(db, 'campusData', key), {
+    value,
+    updatedAt: serverTimestamp(),
+    updatedBy: 'public-visitor'
+  })).catch(error => {
+    console.error('Minnarets cloud save failed:', error);
+    alert('Could not sync this entry. Check your internet connection and Firestore public rules.');
+  });
+  return saveQueue;
+};
+
+// Subscribe to the shared collection so a fresh device receives every published section.
+onSnapshot(collection(db, 'campusData'), snapshot => {
+  applyingRemote = true;
+  let changed = false;
+  snapshot.docChanges().forEach(change => {
+    if (change.type === 'removed') {
+      localStorage.removeItem(prefix + change.doc.id);
+      changed = true;
+      return;
+    }
+    const key = change.doc.id;
+    const value = change.doc.data().value ?? [];
+    const next = JSON.stringify(value);
+    if (localStorage.getItem(prefix + key) !== next) {
+      localStorage.setItem(prefix + key, next);
+      changed = true;
+    }
+  });
+  applyingRemote = false;
+  if (changed) {
+    // Reload only when a remote update arrives; local writes are already rendered by the form.
+    location.reload();
+  }
+}, error => {
+  console.error('Minnarets Firestore listener failed:', error);
+  const note = document.getElementById('minnarets-cloud-note');
+  if (note) note.textContent = 'Cloud sync unavailable — check Firestore rules and connection.';
+});
+
+publishLocalData().catch(error => {
+  console.error('Minnarets initial cloud sync failed:', error);
+  const note = document.getElementById('minnarets-cloud-note');
+  if (note) note.textContent = 'Cloud sync unavailable — check Firestore rules and connection.';
+});
 </script>
 </body>
 </html>
