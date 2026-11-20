@@ -980,7 +980,9 @@ blood:{heading:'Blood Donor & Seeker Board',intro:'For emergencies, contact a ve
 posters:{heading:'Campus Poster Wall',intro:'Post event flyers, workshops, club notices and campus announcements. Links/images are saved locally in this browser.',form:[['Poster title','text'],['Event / organizer','text'],['Poster image URL','url'],['Details / date','text'],['Contact or link','text']]},
 wifi:{heading:'Campus Wi-Fi Help Desk',intro:'For security, this page does not publish shared Wi-Fi passwords. Use credentials issued by campus IT. Try forgetting the network, reconnecting, and checking device date/time.',form:[['Issue','text'],['Device / location','text'],['Troubleshooting tried','text']]},
 library:{heading:'Library & Reading Room',intro:'Personal reading list and book request tracker. Verify availability with the college library.',form:[['Book / resource title','text'],['Author','text'],['Course / topic','text'],['Request or notes','text']]},
-chat:{heading:'Anonymous Campus Chat — Local Demo',intro:'This demo is not a live shared chat: messages are stored only in your browser. Avoid names, phone numbers, sensitive information or harassment.',form:[['Message','text']]}
+chat:{heading:'Anonymous Campus Chat — Local Demo',intro:'This demo is not a live shared chat: messages are stored only in your browser. Avoid names, phone numbers, sensitive information or harassment.',form:[['Message','text']]},
+sos:{heading:'Campus SOS',intro:'Use this shortcut for emergencies. This website does not dispatch alerts or monitor your location. Call the official emergency service directly.',form:[['Optional note for your own record','text']]},
+music:{heading:'Campus Music Player',intro:'Play an audio file from your own device. Files are not uploaded or shared.',form:[['Playlist note (optional)','text']]}
 };
 function read(key){try{return JSON.parse(localStorage.getItem('minnarets_'+key)||'[]')}catch(e){return []}}
 function save(key,val){localStorage.setItem('minnarets_'+key,JSON.stringify(val))}
