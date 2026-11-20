@@ -1292,7 +1292,16 @@ publishLocalData().catch(error => {
   audio.addEventListener('pause',paint);
   audio.addEventListener('error',()=>{status.textContent='Add the BGM file to /assets';});
   paint();
-  start(); // Browsers may require a user gesture before audible autoplay.
+  // Attempt autoplay; if the browser blocks audible autoplay, begin on the
+  // visitor's first interaction anywhere on the page.
+  start();
+  const unlockPlayback=()=>{
+    if(audio.paused&&!audio.muted) start();
+    document.removeEventListener('pointerdown',unlockPlayback);
+    document.removeEventListener('keydown',unlockPlayback);
+  };
+  document.addEventListener('pointerdown',unlockPlayback,{once:true,passive:true});
+  document.addEventListener('keydown',unlockPlayback,{once:true});
 })();
 </script>
 </body>
