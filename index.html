@@ -978,7 +978,7 @@ const extraModules=[
 ['perks','Contributor Perks','Earn community points for verified contributions','fa-star','COMMUNITY'],
 ['blood','Blood Donor Finder','Post urgent blood requests or volunteer as a donor','fa-droplet','LIFE SAVING'],
 ['posters','Poster Wall','Browse and share campus posters, notices and event flyers','fa-images','CAMPUS'],
-['wifi','Campus Wi-Fi Help','Safe connection guide and troubleshooting—no passwords published','fa-wifi','CONNECTIVITY'],
+['wifi','Campus Wi-Fi Passwords','Store network credentials by location with search and copy','fa-wifi','CONNECTIVITY'],
 ['library','Library & Reading Room','Discover library resources, reading lists and book requests','fa-book','LEARNING'],
 ['sos','Campus SOS','Emergency shortcuts and quick safety actions','fa-shield-heart','SAFETY'],
 ['music','Campus Music','Play your own audio files while studying','fa-music','LISTEN'],
@@ -1002,18 +1002,37 @@ halloffame:{heading:'Hall of Fame',intro:'Celebrate student achievements. Add aw
 perks:{heading:'Contributor Perks & Points',intro:'Demo contribution ledger. Points are stored on this device only; no official reward claim is implied.',form:[['Contribution','text'],['Details / proof link','text']]},
 blood:{heading:'Blood Donor & Seeker Board',intro:'For emergencies, contact a verified hospital/blood bank directly. Do not post private medical details. This board is local to your browser.',form:[['Request or volunteer (type)','text'],['Blood group','text'],['Area / hospital','text'],['Contact method (share carefully)','text'],['Urgency','text']]},
 posters:{heading:'Campus Poster Wall',intro:'Post event flyers, workshops, club notices and campus announcements. Links/images are saved locally in this browser.',form:[['Poster title','text'],['Event / organizer','text'],['Poster image URL','url'],['Details / date','text'],['Contact or link','text']]},
-wifi:{heading:'Campus Wi-Fi Help Desk',intro:'For security, this page does not publish shared Wi-Fi passwords. Use credentials issued by campus IT. Try forgetting the network, reconnecting, and checking device date/time.',form:[['Issue','text'],['Device / location','text'],['Troubleshooting tried','text']]},
+wifi:{heading:'Campus Wi-Fi Password Directory',intro:'Save and manage campus network credentials by location.'},
 library:{heading:'Library & Reading Room',intro:'Personal reading list and book request tracker. Verify availability with the college library.',form:[['Book / resource title','text'],['Author','text'],['Course / topic','text'],['Request or notes','text']]},
 chat:{heading:'Anonymous Campus Chat — Local Demo',intro:'This demo is not a live shared chat: messages are stored only in your browser. Avoid names, phone numbers, sensitive information or harassment.',form:[['Message','text']]},
 sos:{heading:'Campus SOS',intro:'Use this shortcut for emergencies. This website does not dispatch alerts or monitor your location. Call the official emergency service directly.',form:[['Optional note for your own record','text']]},
 music:{heading:'Campus Music Player',intro:'Play an audio file from your own device. Files are not uploaded or shared.',form:[['Playlist note (optional)','text']]}
 };
+function renderWifi(){
+const host=document.getElementById('extra-module-content');if(!host)return;
+document.getElementById('generic-title').innerText='Campus Wi-Fi Password Directory';
+let items=read('wifi');
+host.innerHTML='<p class="text-sm text-slate-500 mb-4">Save network names, passwords, locations and verification dates. Entries are stored only in this browser. Do not use this on shared/public devices.</p><div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 mb-4"><strong>Privacy note:</strong> This is browser-local storage, not encrypted or account-protected. Anyone with access to this browser can view saved credentials.</div><div class="bg-white border border-slate-200 rounded-2xl p-5 mb-5"><form id="wifi-add" class="grid grid-cols-1 md:grid-cols-2 gap-3"><input name="ssid" placeholder="Network / SSID" required class="border rounded-lg p-3 text-sm"><input name="location" placeholder="Location (Library, Block, Hostel…)" required class="border rounded-lg p-3 text-sm"><select name="type" class="border rounded-lg p-3 text-sm"><option>Student</option><option>Staff</option><option>Guest</option><option>Lab</option><option>Hostel</option><option>Other</option></select><input name="password" placeholder="Wi-Fi password" required class="border rounded-lg p-3 text-sm"><input name="verified" type="date" class="border rounded-lg p-3 text-sm"><button class="md:col-span-2 bg-brand-600 text-white font-bold rounded-lg py-3 text-sm">Save Network</button></form></div><div class="flex flex-col md:flex-row gap-3 mb-4"><input id="wifi-search" placeholder="Search network or location…" class="flex-1 border rounded-lg p-3 text-sm"><select id="wifi-filter" class="border rounded-lg p-3 text-sm"><option value="">All types</option><option>Student</option><option>Staff</option><option>Guest</option><option>Lab</option><option>Hostel</option><option>Other</option></select></div><div id="wifi-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>';
+function renderList(){
+const q=(document.getElementById('wifi-search').value||'').toLowerCase(),type=document.getElementById('wifi-filter').value;
+const list=items.filter(x=>(!type||x.type===type)&&(!q||(x.ssid+' '+x.location+' '+x.type).toLowerCase().includes(q)));
+const out=document.getElementById('wifi-list');
+out.innerHTML=list.length?list.map(x=>'<article class="bg-white border border-slate-200 rounded-2xl p-4"><div class="flex justify-between gap-2"><div><h4 class="font-bold text-slate-900">'+esc(x.ssid)+'</h4><p class="text-xs text-slate-500 mt-1">'+esc(x.location)+' · '+esc(x.type)+'</p></div><button data-delete="'+x.id+'" class="text-rose-600 text-xs font-bold">Delete</button></div><div class="mt-3 flex gap-2"><input id="pw-'+x.id+'" type="password" readonly value="'+esc(x.password)+'" class="min-w-0 flex-1 bg-slate-50 border rounded-lg px-3 py-2 text-sm"><button data-toggle="'+x.id+'" class="border rounded-lg px-3 text-xs font-semibold">Show</button><button data-copy="'+x.id+'" class="bg-brand-600 text-white rounded-lg px-3 text-xs font-semibold">Copy</button></div><p class="text-[11px] text-slate-400 mt-2">Last verified: '+esc(x.verified||'Not set')+'</p></article>').join(''):'<p class="text-sm text-slate-400 bg-white border rounded-xl p-4 md:col-span-2">No networks found. Add one above.</p>';
+out.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const inp=document.getElementById('pw-'+b.dataset.toggle);inp.type=inp.type==='password'?'text':'password';b.textContent=inp.type==='password'?'Show':'Hide'});
+out.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const x=items.find(y=>y.id===b.dataset.copy);try{await navigator.clipboard.writeText(x.password);b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1200)}catch(e){alert('Copy failed. Select and copy manually.')}});
+out.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{if(confirm('Delete this saved network?')){items=items.filter(y=>y.id!==b.dataset.delete);save('wifi',items);renderList()}});
+}
+document.getElementById('wifi-add').onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target);items.push({id:Date.now().toString(),ssid:fd.get('ssid'),location:fd.get('location'),type:fd.get('type'),password:fd.get('password'),verified:fd.get('verified')});save('wifi',items);e.target.reset();renderList()};
+document.getElementById('wifi-search').oninput=renderList;document.getElementById('wifi-filter').onchange=renderList;renderList();
+}
 function read(key){try{return JSON.parse(localStorage.getItem('minnarets_'+key)||'[]')}catch(e){return []}}
 function save(key,val){localStorage.setItem('minnarets_'+key,JSON.stringify(val))}
 function esc(s){return String(s||'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
 window.openExtra=function(id){showView('extra');renderExtra(id)}
 function renderExtra(id){
 const m=descriptions[id];if(!m)return;
+if(id==='wifi'){renderWifi();return;}
+
 document.getElementById('generic-title').innerText=m.heading;
 const host=document.getElementById('extra-module-content');if(!host)return;
 let records=read(id);
