@@ -157,6 +157,22 @@ body, header, footer, button, a, select, input, textarea,
   #minnarets-bgm-mute:focus-visible{outline:3px solid var(--campus-accent,#2563eb);outline-offset:3px}
   @media(max-width:640px){#minnarets-bgm-mute{padding:8px 9px}#minnarets-bgm-mute span{display:none}}
 </style>
+<style id="minnarets-ai-guide-style">
+#minnarets-ai-launcher{position:fixed;right:22px;bottom:22px;z-index:10000;border:0;border-radius:999px;padding:13px 17px;background:var(--campus-accent,#2563eb);color:#fff;box-shadow:0 10px 30px rgba(15,23,42,.2);font:700 14px 'Source Sans 3',sans-serif;display:flex;align-items:center;gap:9px;cursor:pointer}
+#minnarets-ai-panel{position:fixed;right:22px;bottom:82px;width:min(390px,calc(100vw - 28px));height:min(590px,calc(100vh - 120px));z-index:10000;background:#fff;border:1px solid #e2e8f0;border-radius:20px;box-shadow:0 20px 60px rgba(15,23,42,.22);display:none;overflow:hidden;font-family:'Source Sans 3',sans-serif}
+#minnarets-ai-panel.open{display:flex;flex-direction:column}
+#minnarets-ai-panel .ai-head{background:var(--campus-accent,#2563eb);color:#fff;padding:15px 17px;display:flex;align-items:center;justify-content:space-between}
+#minnarets-ai-panel .ai-body{padding:14px;overflow:auto;flex:1;background:#f8fafc}
+#minnarets-ai-panel .ai-msg{max-width:94%;padding:10px 12px;border-radius:14px;margin:0 0 10px;font-size:13px;line-height:1.45;white-space:normal}
+#minnarets-ai-panel .ai-bot{background:#fff;border:1px solid #e2e8f0;color:#334155;border-top-left-radius:4px}
+#minnarets-ai-panel .ai-user{background:var(--campus-soft,#eff6ff);color:#1e293b;margin-left:auto;border-top-right-radius:4px}
+#minnarets-ai-panel .ai-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+#minnarets-ai-panel .ai-actions button,#minnarets-ai-panel .ai-chip{border:1px solid var(--campus-border,#bfdbfe);background:var(--campus-soft,#eff6ff);color:var(--campus-accent-dark,#1d4ed8);padding:7px 10px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer}
+#minnarets-ai-panel .ai-foot{padding:11px;border-top:1px solid #e2e8f0;background:#fff;display:flex;gap:8px}
+#minnarets-ai-input{min-width:0;flex:1;border:1px solid #cbd5e1;border-radius:12px;padding:10px 12px;font-size:13px;outline-color:var(--campus-accent,#2563eb)}
+#minnarets-ai-send{border:0;border-radius:12px;background:var(--campus-accent,#2563eb);color:white;padding:0 15px;font-weight:700}
+@media(max-width:480px){#minnarets-ai-launcher{right:14px;bottom:14px}#minnarets-ai-panel{right:8px;bottom:72px;width:calc(100vw - 16px);height:min(590px,calc(100vh - 95px))}}
+</style>
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -919,6 +935,16 @@ body, header, footer, button, a, select, input, textarea,
 
   </main>
 
+<button id="minnarets-ai-launcher" type="button" aria-label="Open Minnarets AI campus guide"><i class="fa-solid fa-robot"></i><span>Ask Minnarets</span></button>
+<section id="minnarets-ai-panel" aria-label="Minnarets campus assistant" aria-live="polite">
+ <div class="ai-head"><div><div class="font-bold text-base">Minnarets AI Guide</div><div class="text-xs opacity-90">Sections · updates · navigation</div></div><button id="minnarets-ai-close" aria-label="Close assistant" class="text-white text-xl px-2">×</button></div>
+ <div class="ai-body" id="minnarets-ai-messages">
+  <div class="ai-msg ai-bot">Hi! I can guide you around Minnarets TKMCE. Ask for a section summary, where to find something, or the latest portal changes.</div>
+  <div class="ai-actions"><button class="ai-chip" data-ai-query="Show all sections">Browse sections</button><button class="ai-chip" data-ai-query="What are the latest updates?">Latest updates</button><button class="ai-chip" data-ai-query="How do I raise an issue?">Raise an issue</button></div>
+ </div>
+ <form class="ai-foot" id="minnarets-ai-form"><input id="minnarets-ai-input" autocomplete="off" placeholder="Ask about a section or feature…" aria-label="Ask the campus assistant"><button id="minnarets-ai-send" type="submit">Send</button></form>
+</section>
+
   <!-- FOOTER -->
   <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
     <div class="max-w-7xl mx-auto px-4">
@@ -1288,6 +1314,82 @@ publishLocalData().catch(error => {
   };
   document.addEventListener('pointerdown',unlockPlayback,{once:true,passive:true});
   document.addEventListener('keydown',unlockPlayback,{once:true});
+})();
+</script>
+<script id="minnarets-ai-guide-logic">
+(function(){
+ const sections=[
+  ['academic','Academic Workspace','Notes, KTU syllabus, study materials and previous-question-paper references.','notes syllabus pyq study material academic'],
+  ['seating','Exam Seating Arrangement','Enter a roll number to look up the assigned hall, bench, desk, exam time and invigilator block.','exam hall seat roll number seating bench'],
+  ['schedule','Stay on Schedule','A timeline for Hestia, SIH, YIP, series tests and union events.','calendar timeline cycle schedule dates'],
+  ['events',"What's Happening",'Upcoming college events, symposiums, workshops and cultural fests.','events fest workshop symposium'],
+  ['clubs',"There's a Club for That",'Explore IEEE SB, SAE TKMCE (Team DronA), FOSS Cell, IEDC and Defence Focus Club.','clubs societies ieee foss iedc'],
+  ['attendance','Attendance & Bunk Radar','Track course attendance, duty leaves and estimate safe skippable lectures.','attendance bunk percentage shortage'],
+  ['vacant','Free Classroom & Lab Finder','Find listed vacant seminar halls, computer labs and quiet study rooms.','vacant room classroom lab free space'],
+  ['hardware','Hardware Inventory Bank','Find or list shared project hardware such as microcontrollers, sensors and ESCs.','hardware components borrow sensors inventory'],
+  ['freelance','Student Freelance Hub','Offer or find student services including editing, CAD, posters and web development.','freelance jobs skills services work'],
+  ['lostfound','Lost & Found Registry','Report a lost item or look for belongings reported around campus.','lost found id card usb earbuds'],
+  ['planner','Exam Countdown & Planner','Use exam timers, subject checklists and the Pomodoro focus tool.','planner countdown timer pomodoro study'],
+  ['calculator','CIA & CGPA Predictor','Estimate internal marks and explore possible end-semester grade outcomes.','cia cgpa marks calculator grade'],
+  ['gate','GATE & Placement Vault','Find GATE preparation and placement resources, plus the GOAPS image utility.','gate placement jobs career goaps'],
+  ['textbooks','Textbook & Lab Exchange','Find, sell or pass on textbooks and lab or engineering-drawing supplies.','textbook books lab apron exchange'],
+  ['transit','Bus Commute Tracker','Check listed bus routes and commute information for Karicode, Kollam and Peroor.','bus transport transit commute route'],
+  ['map','Interactive Campus Map','Explore mapped campus buildings and places including APJ Hall, FabLab, department blocks and canteen.','map directions location path building'],
+  ['hackathon','Hackathon Matchmaker','Find teammates or post a team requirement for SIH, e-Yantra, IEEE contests and other sprints.','hackathon team teammate competition'],
+  ['venue','Venue Date Bookings','Find the venue booking section for APJ Abdul Kalam Hall, Central Auditorium and seminar halls.','venue booking reserve auditorium hall'],
+  ['seniors','Senior Circle','Find senior peer mentors for subject guidance and career insights.','senior mentor guidance'],
+  ['funding','Funding Finder','Explore listed scholarships, project grants and KSCSTE funding schemes.','scholarship funding grant'],
+  ['safety','Women Safety Portal','Find safety contacts, helplines and Internal Complaints Committee information.','women safety helpline icc emergency'],
+  ['hostel','Rooms and Rations','Find hostel mess-menu information and Karicode PG or housing listings.','hostel mess pg room accommodation'],
+  ['neighbourhood','Neighbourhood Cheat Sheet','Find nearby essentials such as Xerox shops, ATMs, clinics and tea stalls.','nearby xerox atm clinic shop'],
+  ['inquiry','Got Questions?','Send a campus query to the relevant campus leads.','question inquiry contact help'],
+  ['raise_issue','Raise Issue','Report a campus issue through the portal’s issue-reporting section.','complaint report issue problem grievance']
+ ];
+ const updates=[
+  'Six selectable colour themes: Ocean, Violet, Emerald, Sunset, Rose and Graphite.',
+  'Theme switching now uses smoother colour-only transitions and restores the saved theme earlier.',
+  'Background music is configured to loop at 50% volume, with a Mute/Unmute control beside Raise Issue. Browsers may require a first interaction before audio starts.',
+  'Section contribution forms are available in supported modules; shared cross-device visibility depends on the Firestore connection and rules.'
+ ];
+ const panel=document.getElementById('minnarets-ai-panel'), launcher=document.getElementById('minnarets-ai-launcher'), close=document.getElementById('minnarets-ai-close'), body=document.getElementById('minnarets-ai-messages'), form=document.getElementById('minnarets-ai-form'), input=document.getElementById('minnarets-ai-input');
+ if(!panel||!launcher||!body||!form||!input)return;
+ function addMessage(text,who,actions){
+  const wrap=document.createElement('div');wrap.className='ai-msg '+(who==='user'?'ai-user':'ai-bot');wrap.textContent=text;body.appendChild(wrap);
+  if(actions&&actions.length){const row=document.createElement('div');row.className='ai-actions';actions.forEach(a=>{const b=document.createElement('button');b.type='button';b.textContent=a.label;b.addEventListener('click',a.run);row.appendChild(b)});body.appendChild(row)}
+  body.scrollTop=body.scrollHeight;
+ }
+ function go(id){if(typeof window.showView==='function')window.showView(id);panel.classList.remove('open')}
+ function answer(q){
+  const t=q.toLowerCase().trim();
+  if(/update|new feature|changed|latest|release|what.?s new/.test(t)){
+   addMessage('Recent portal updates:\n• '+updates.join('\n• ')+'\n\nThese are portal changes, not a live news feed.', 'bot',[{label:'Browse sections',run:()=>answer('Show all sections')}]);return;
+  }
+  if(/show all|all sections|browse|list sections|what sections|modules/.test(t)){
+   addMessage('Choose a section below. Each button opens that section directly.','bot',sections.map(x=>({label:x[1],run:()=>go(x[0])})));return;
+  }
+  if(/raise issue|report issue|complaint|grievance/.test(t)){
+   const x=sections.find(x=>x[0]==='raise_issue');addMessage(x[1]+': '+x[2]+'\nPath: Dashboard → Raise Issue.','bot',[{label:'Open Raise Issue',run:()=>go('raise_issue')}]);return;
+  }
+  if(/music|mute|theme|colour|color/.test(t)){
+   addMessage('Theme selector: use the theme dropdown in the top navigation to choose Ocean, Violet, Emerald, Sunset, Rose or Graphite. Music: use the Mute/Unmute control beside Raise Issue; playback is set to 50% volume and loops when the browser permits playback.','bot');return;
+  }
+  const words=t.split(/[^a-z0-9]+/).filter(w=>w.length>2);
+  const ranked=sections.map(x=>({x,score:words.reduce((n,w)=>n+((x[1]+' '+x[2]+' '+x[3]).toLowerCase().includes(w)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+  if(ranked.length){
+   const top=ranked.slice(0,3);
+   if(top.length===1||top[0].score>top[1].score){
+    const x=top[0].x;addMessage(x[1]+': '+x[2]+'\nPath: Dashboard → '+x[1]+'.','bot',[{label:'Open '+x[1],run:()=>go(x[0])},{label:'Browse all sections',run:()=>answer('Show all sections')}]);
+   }else{
+    addMessage('I found a few relevant sections. Which one do you mean?','bot',top.map(({x})=>({label:x[1],run:()=>go(x[0])})));
+   }
+   return;
+  }
+  addMessage('I can help with section summaries, navigation paths, portal updates, themes, music, and campus tools. Try “Where are the notes?”, “Summarise the campus map”, or “What are the latest updates?”.','bot',[{label:'Browse sections',run:()=>answer('Show all sections')},{label:'Latest updates',run:()=>answer('What are the latest updates?')}]);
+ }
+ launcher.addEventListener('click',()=>{panel.classList.toggle('open');if(panel.classList.contains('open'))input.focus()});
+ close.addEventListener('click',()=>panel.classList.remove('open'));
+ form.addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(!q)return;addMessage(q,'user');input.value='';answer(q)});
+ body.addEventListener('click',e=>{const b=e.target.closest('[data-ai-query]');if(b)answer(b.dataset.aiQuery)});
 })();
 </script>
 </body>
